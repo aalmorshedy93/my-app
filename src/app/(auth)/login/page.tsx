@@ -15,7 +15,7 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.length < 10 || password.length < 6) {
-      toast.error('Please fill in all fields');
+      toast.error('Please check  all fields');
       return;
     } else {
       toast.success('Login successful!');
