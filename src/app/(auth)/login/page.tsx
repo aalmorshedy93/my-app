@@ -18,7 +18,7 @@ export default function LoginPage() {
       toast.error('Please check  all fields');
       return;
     } else {
-      toast.success('Login successfuly!');
+      toast.success('Login successful!');
       console.log({ email, password });
       if (role === 'admin') {
         router.push('/admin');
