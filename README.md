@@ -1,3 +1,54 @@
+# My App
+
+مشروع Next.js مبني باستخدام App Router وTypeScript وTailwindCSS.
+
+محتوى سريع:
+
+- Next.js (App Router)
+- TypeScript (strict)
+- TailwindCSS
+- ESLint + Prettier
+- Husky + lint-staged
+
+الاعدادات المحلية
+
+متطلبات:
+
+- Node.js 18+ (يوصى 20)
+- npm
+
+تشغيل محلي:
+
+```cmd
+npm ci
+npm run dev
+```
+
+أوامر مفيدة:
+
+```cmd
+npm run dev        # تشغيل بيئة التطوير
+npm run build      # بناء المشروع
+npm run start      # تشغيل النسخة المبنية
+npm run lint       # فحص eslint
+npm run format     # تنسيق الكود عبر prettier
+npm run format:check # التحقق من التنسيق
+```
+
+.env.example
+
+قم بنسخ `.env.example` إلى `.env.local` واملأ القيم الحساسة قبل التشغيل.
+
+ملف CI
+
+تم إضافة GitHub Actions workflow أساسي في `.github/workflows/ci.yml` يقوم بتشغيل lint وtype-check وbuild على كل Push/PR.
+
+أين أبدأ؟
+
+1. شغّل `npm ci` ثم `npm run dev` لبدء التطوير.
+2. إذا رغبت، أستطيع إضافة اختبارات (Vitest) أو سكربت لفحص الأنواع (`type-check`) في `package.json` أو إعداد نشر تلقائي.
+
+إذا تحب، أطبّق أي تحسين إضافي تريده الآن (اختبارات، CI أوسع، حماية الفروع، مثال نشر).
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
