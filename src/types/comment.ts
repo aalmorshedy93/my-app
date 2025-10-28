@@ -1,8 +1,8 @@
-export type Comment = {
+export type ArticleComment = {
   id: string;
   author: string;
   body: string;
-  createdAt: string; // ISO timestamp
+  createdAt: string;
 };
 
-export default Comment;
+export default ArticleComment;

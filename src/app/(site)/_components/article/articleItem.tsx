@@ -9,7 +9,7 @@ export const ArticleItem = ({ article }: prpoArticle) => {
   return (
     <>
       <div className="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col group">
-        <div className="h-40 bg-gradient-to-r from-sky-400 to-blue-500 flex justify-center items-center text-white text-4xl font-bold">
+        <div className="h-40 bg-gradient-to-r from-sky-400 to-blue-500  flex justify-center items-center text-white text-4xl font-bold">
           #{article.id}
         </div>
 

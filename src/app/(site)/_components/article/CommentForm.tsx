@@ -1,74 +1,64 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-import type { Comment } from '@/types/comment';
-import React, { useState } from 'react';
+import { useCommentsStore } from '@/store/commentsStore';
+import type { ArticleComment } from '@/types/comment';
+import { useState } from 'react';
 
-type Props = {
-  /** Called when form is submitted with the new comment (not persisted) */
-  onSubmit?: (comment: Comment) => void;
-  /** Optional default author name */
-  defaultAuthor?: string;
-};
+export default function CommentForm() {
+  const addComment = useCommentsStore((state) => state.addComment);
 
-export default function CommentForm({ onSubmit, defaultAuthor = '' }: Props) {
-  const [author, setAuthor] = useState(defaultAuthor);
+  const [author, setAuthor] = useState('');
   const [body, setBody] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!body.trim()) return;
+
     setSubmitting(true);
 
-    const comment: Comment = {
+    const newComment: ArticleComment = {
       id: String(Date.now()),
       author: author.trim() || 'Anonymous',
       body: body.trim(),
       createdAt: new Date().toISOString(),
     };
 
-    // call callback for parent to handle (e.g. add to local list)
-    if (onSubmit) {
-      try {
-        await Promise.resolve(onSubmit(comment));
-      } catch {
-        // swallow — parent can show error
-      }
-    }
+    addComment(newComment);
 
+    // reset form
+    setAuthor('');
     setBody('');
     setSubmitting(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <label className="sr-only">Name</label>
-        <Input
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          placeholder="Your name (optional)"
-          className="sm:col-span-1"
-        />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h3 className="text-lg font-semibold text-gray-800">Add a Comment</h3>
 
-        <label className="sr-only">Comment</label>
-        <textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          placeholder="Write a comment..."
-          rows={3}
-          className="sm:col-span-2 w-full rounded-md border border-input px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-        />
-      </div>
+      <input
+        type="text"
+        value={author}
+        onChange={(e) => setAuthor(e.target.value)}
+        placeholder="Your name (optional)"
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder:text-gray-500 focus:ring-2 focus:ring-sky-300 focus:border-sky-500 outline-none transition"
+      />
 
-      <div className="flex items-center justify-end gap-2">
+      <textarea
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        placeholder="Write your comment..."
+        rows={3}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder:text-gray-500 focus:ring-2 focus:ring-sky-300 focus:border-sky-500 outline-none transition"
+      />
+
+      <div className="flex justify-end">
         <button
           type="submit"
-          disabled={submitting || !body.trim()}
-          className="px-3 py-2 bg-sky-600 text-white rounded disabled:opacity-50"
+          disabled={!body.trim() || submitting}
+          className="px-4 py-2 rounded-lg bg-sky-600 text-white font-medium hover:bg-sky-700 disabled:opacity-40 transition"
         >
-          {submitting ? 'Submitting…' : 'Add comment'}
+          {submitting ? 'Posting...' : 'Post Comment'}
         </button>
       </div>
     </form>
