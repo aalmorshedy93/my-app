@@ -29,7 +29,7 @@ export const useCommentsStore = create(
         })),
     }),
     {
-      name: 'comments-storage', // 🔥 اسم التخزين في LocalStorage
+      name: 'comments-storage', // name of the item in the storage
     }
   )
 );

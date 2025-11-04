@@ -1,4 +1,4 @@
-import prisma from '@/utils/db';
+import { prisma } from '@/lib/prisma';
 import { createArticleSchema } from '@/utils/validationSchemas';
 import { NextRequest, NextResponse } from 'next/server';
 
