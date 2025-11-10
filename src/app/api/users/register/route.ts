@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { CreateUser } from '@/utils/dtos';
-import { generateToken } from '@/utils/generateToken';
 import { registerUserSchema } from '@/utils/validationSchemas';
+import { generateToken } from '@/utils/generateToken';
 import argon2 from 'argon2';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as CreateUser;
 
-    // ✅ Validate input
     const validation = registerUserSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
@@ -25,11 +24,9 @@ export async function POST(request: NextRequest) {
 
     const { email, userName, password, name, isAdmin } = validation.data;
 
-    // ✅ Check duplicate email OR username in ONE query
+    // ✅ Check Email OR Username
     const existingUser = await prisma.user.findFirst({
-      where: {
-        OR: [{ email }, { userName }],
-      },
+      where: { OR: [{ email }, { userName }] },
     });
 
     if (existingUser) {
@@ -44,23 +41,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Hash password using Argon2
+    // ✅ Hash Password
     const hashedPassword = await argon2.hash(password, {
       type: argon2.argon2id,
-      memoryCost: 2 ** 16,
-      timeCost: 4,
-      parallelism: 2,
     });
 
-    // ✅ Create new user
     const createdUser = await prisma.user.create({
-      data: {
-        email,
-        userName,
-        name,
-        isAdmin,
-        password: hashedPassword,
-      },
+      data: { email, userName, name, isAdmin, password: hashedPassword },
       select: {
         id: true,
         email: true,
@@ -71,9 +58,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const token = (await generateToken(createdUser)) as string;
+    // ✅ Create token
+    const token = await generateToken(createdUser);
 
-    return NextResponse.json({ user: createdUser, token }, { status: 201 });
+    return NextResponse.json(
+      {
+        user: createdUser,
+        token,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

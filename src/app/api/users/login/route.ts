@@ -1,18 +1,14 @@
 import { prisma } from '@/lib/prisma';
 import { LoginUserDTO } from '@/utils/dtos';
-import { generateToken } from '@/utils/generateToken';
 import { loginUserSchema } from '@/utils/validationSchemas';
+import { generateToken } from '@/utils/generateToken';
 import argon2 from 'argon2';
 import { NextRequest, NextResponse } from 'next/server';
 
-/** * @method POST
- * @route ~/api/users/login
- * @description Login a user
- * @access Public
- */
-export async function POST(_request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body = (await _request.json()) as LoginUserDTO;
+    const body = (await request.json()) as LoginUserDTO;
+
     const validation = loginUserSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
@@ -25,19 +21,16 @@ export async function POST(_request: NextRequest) {
         { status: 400 }
       );
     }
-    const user = await prisma.user.findUnique({
-      where: { email: validation.data.email },
-    });
-    if (!user) {
+
+    const { email, password } = validation.data;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !(await argon2.verify(user.password, password))) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
-    const isPasswordValid = await argon2.verify(user.password, validation.data.password);
-    if (!isPasswordValid) {
-      return NextResponse.json({ error: 'Invalid  password' }, { status: 401 });
-    }
 
-    // ✅ Create JWT
-    const token = (await generateToken(user)) as string;
+    const token = await generateToken(user);
 
     return NextResponse.json(
       {
