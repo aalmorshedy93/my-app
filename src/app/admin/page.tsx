@@ -1,9 +1,10 @@
-import React from 'react'
-
 function AdminPage() {
   return (
-    <div>AdminPage</div>
-  )
+    <div className="position-fixed top-100 bg-red-500 ">
+      {' '}
+      <h1>AdminPagehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</h1>
+    </div>
+  );
 }
 
-export default AdminPage
+export default AdminPage;
